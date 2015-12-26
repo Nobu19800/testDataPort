@@ -112,65 +112,7 @@ class MyFirstComponent(OpenRTM_aist.DataFlowComponentBase):
 		
 		# Set CORBA Service Ports
 		self.addPort(self._servicePort)
-		self.flag = 0
-
-		mgr = OpenRTM_aist.Manager.instance()
-		port = mgr.getPOA().reference_to_servant(self.get_ports()[0])
-
-				
 		
-		
-		name  = "dataports.port_cxt/"
-		name += "test.topic_cxt/"
-		name += "in"
-		name += ".inport"
-		#print dir(port)
-		#mgr._namingManager.bindPortObject(name, port)
-		#mgr._namingManager.bindObject(name, self._moveService)
-		p = self.get_ports()[0]
-		prof = p.get_port_profile()
-		#prop = OpenRTM_aist.Properties()
-		#OpenRTM_aist.NVUtil.copyToProperties(prop, prof.properties)
-		#prop.setProperty("publish_topic","test")
-		#OpenRTM_aist.NVUtil.copyFromProperties(prof.properties,prop)
-		OpenRTM_aist.CORBA_SeqUtil.push_back(prof.properties, OpenRTM_aist.NVUtil.newNV("publish_topic","test"))
-		#print prof.properties
-		#prop.setProperty("publish_topic","test")
-		mgr = OpenRTM_aist.Manager.instance()
-		#mgr.publishPorts(self)
-		ns = mgr._namingManager._names
-		name  = "dataports.port_cxt/"
-		name += "test.topic_cxt"
-		#print mgr.getPortsOnNameServers(name,"outport")
-		#mgr.subscribePorts(self)
-		#print dir(RTC._objref_PortService)
-		
-		for n in ns:
-			noc = n.ns
-			if noc is None:
-				continue
-			cns = noc._cosnaming
-			name  = "dataports.port_cxt/"
-			name += "test.topic_cxt"
-			
-			"""orb = mgr.getORB()
-			poa = mgr.getPOA()
-			obj = noc._cosnaming.getRootContext()
-			rootContext = obj._narrow(CosNaming.NamingContext)
-			name = [CosNaming.NameComponent("test", "my_context")]
-			testContext = rootContext.bind_new_context(name)
-			name = [CosNaming.NameComponent("ExampleEcho", "Object")]
-			testContext.bind(name, port._this())"""
-			
-			#print cns.resolveStr("Owner.host_cxt/MyFirstComponent0.rtc")
-			#print cns.listByKind(name,"inport")
-			#bl = cns.getRootContext().list(100)
-			#bl = tuple()
-			#bl =  CosNaming.Binding("","")
-			
-			#print dir(cns)
-			#name = "MyFirstComponent0"
-			#print cns.resolveStr(name)
 		
 		return RTC.RTC_OK
 	
@@ -255,15 +197,14 @@ class MyFirstComponent(OpenRTM_aist.DataFlowComponentBase):
 		#
 	def onExecute(self, ec_id):
 		
-		self.flag += 1
-		if self.flag % 2 == 0:
-			self._d_out.data = 100
-			self._outOut.write()
-		#print self._inIn.isNew()
-		if self._inIn.isNew() or True:
+
+		self._d_out.data += 1
+		self._outOut.write()
+		
+		if self._inIn.isNew():
 			data = self._inIn.read()
-			print data
-		#print "MyFirstComponent: ",self._moveService
+			print data.data
+		
 		return RTC.RTC_OK
 	
 	#	##
